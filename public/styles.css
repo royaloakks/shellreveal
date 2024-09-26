@@ -8,14 +8,6 @@ body {
     background-color: #f0f0f0;
 }
 
-#image-container {
-    width: 500px;
-    height: 500px;
-    position: relative;
-    overflow: hidden;
-}
-
-.image-section {
-    position: absolute;
-    transition: opacity 1s ease-in-out;
+#canvas-container {
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
