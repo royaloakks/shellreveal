@@ -16,7 +16,7 @@ function loadImage(src) {
 
 async function setup() {
     console.log('Setup started');
-    image = await loadImage('images/sg_shell.jpg');
+    image = await loadImage('images/sg_shell.jpg'); // Load your image
     console.log('Image loaded', image.width, image.height);
     
     // Set canvas dimensions
@@ -24,6 +24,10 @@ async function setup() {
     canvas.height = image.height;
     document.body.appendChild(canvas); // Append the canvas to the body
 
+    // Fill the canvas with white to start fully masked
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
     startTime = Date.now(); // Start the timer
     console.log('Starting reveal');
     revealImage(); // Start the reveal process
