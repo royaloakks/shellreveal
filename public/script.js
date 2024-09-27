@@ -39,6 +39,12 @@ async function setup() {
 }
 
 function revealImage() {
+    const canvas = document.getElementById('myCanvas'); // Ensure this ID matches your HTML
+    if (!canvas) {
+        console.error('Canvas element not found');
+        return; // Exit if canvas is not found
+    }
+    const ctx = canvas.getContext('2d');
     const elapsedTime = Date.now() - startTime;
     const progress = Math.min(elapsedTime / REVEAL_DURATION, 1); // Calculate progress
 
