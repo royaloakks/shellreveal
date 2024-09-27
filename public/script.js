@@ -40,30 +40,37 @@ async function setup() {
 }
 
 function revealImage() {
-    const elapsedTime = Date.now() - startTime;
-    const progress = Math.min(elapsedTime / REVEAL_DURATION, 1); // Calculate progress
+    const canvas = document.getElementById('canvas');
+    const ctx = canvas.getContext('2d');
+    const image = new Image();
+    image.src = 'path/to/your/image.jpg'; // Update with your image path
 
-    console.log('Reveal progress:', progress);
-    
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-    ctx.drawImage(image, 0, 0); // Draw the image first
+    image.onload = () => {
+        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
+        ctx.globalCompositeOperation = 'destination-out'; // Change to 'destination-out' for masking
 
-    // Create a mask with a gradient
-    const gradient = ctx.createRadialGradient(canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2);
-    gradient.addColorStop(0, 'rgba(0, 0, 0, 0)'); // Transparent in the center
-    gradient.addColorStop(progress, 'rgba(0, 0, 0, 0)'); // Transparent at the current progress
-    gradient.addColorStop(1, 'rgba(0, 0, 0, 1)'); // Opaque at the edges
+        let startTime = null;
+        const duration = 60000; // 1 minute
 
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, canvas.width, canvas.height); // Apply the mask
+        function animate(timestamp) {
+            if (!startTime) startTime = timestamp;
+            const elapsed = timestamp - startTime;
 
-    ctx.globalCompositeOperation = 'destination-in'; // Mask the image with the gradient
-    ctx.fillRect(0, 0, canvas.width, canvas.height); // Apply the mask again to actually hide the image
-    ctx.globalCompositeOperation = 'source-over'; // Reset composite operation
+            // Calculate the opacity based on elapsed time
+            const opacity = Math.min(elapsed / duration, 1);
+            ctx.fillStyle = `rgba(0, 0, 0, ${opacity})`; // Gradually increase opacity
 
-    if (progress < 1) {
-        requestAnimationFrame(revealImage); // Continue the reveal
-    }
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            if (elapsed < duration) {
+                requestAnimationFrame(animate);
+            } else {
+                ctx.globalCompositeOperation = 'source-over'; // Reset to default
+            }
+        }
+
+        requestAnimationFrame(animate);
+    };
 }
 
 // Call setup to start the process
