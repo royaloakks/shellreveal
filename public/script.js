@@ -4,8 +4,8 @@ const ctx = canvas.getContext('2d');
 const maskCanvas = document.createElement('canvas');
 const maskCtx = maskCanvas.getContext('2d');
 
-const REVEAL_DURATION = 5 * 60 * 1000; // 5 minutes in milliseconds
-const REVEAL_INTERVAL = 100; // Update every 100ms
+const REVEAL_DURATION = 60 * 1000; // 1 minute in milliseconds
+const REVEAL_INTERVAL = 50; // Update every 50ms for smoother animation
 let startTime;
 
 function loadImage(src) {
@@ -50,14 +50,14 @@ function revealImage() {
     gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
     
     maskCtx.fillStyle = gradient;
-    maskCtx.fillRect(0, 0, canvas.width, canvas.height);
+    maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
     
     ctx.globalCompositeOperation = 'destination-in';
     ctx.drawImage(maskCanvas, 0, 0);
     ctx.globalCompositeOperation = 'source-over';
     
     if (progress < 1) {
-        setTimeout(revealImage, REVEAL_INTERVAL);
+        requestAnimationFrame(revealImage);
     }
 }
 

@@ -8,6 +8,6 @@ body {
     background-color: #f0f0f0;
 }
 
-#canvas-container {
+canvas {
     box-shadow: 0 0 10px rgba(0,0,0,0.1);
 }
