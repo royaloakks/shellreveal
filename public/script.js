@@ -53,13 +53,13 @@ function revealImage() {
         canvas.width / 2, canvas.height / 2, 0,
         canvas.width / 2, canvas.height / 2, canvas.width * progress
     );
-    gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
-    gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
+    gradient.addColorStop(0, 'rgba(0, 0, 0, 0)'); // Transparent at the center
+    gradient.addColorStop(1, 'rgba(0, 0, 0, 1)'); // Opaque at the edges
     
     maskCtx.fillStyle = gradient; // Apply the gradient to the mask
-    maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
+    maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height); // Fill the mask with the gradient
     
-    ctx.globalCompositeOperation = 'destination-in'; // Set composite operation
+    ctx.globalCompositeOperation = 'destination-in'; // Set composite operation to mask
     ctx.drawImage(maskCanvas, 0, 0); // Apply the mask
     ctx.globalCompositeOperation = 'source-over'; // Reset composite operation
     
