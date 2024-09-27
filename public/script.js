@@ -22,6 +22,7 @@ async function setup() {
     image = await loadImage('images/sg_shell.jpg');
     console.log('Image loaded', image.width, image.height);
     
+    // Set canvas dimensions
     canvas.width = image.width;
     canvas.height = image.height;
     document.body.appendChild(canvas);
@@ -29,22 +30,23 @@ async function setup() {
     maskCanvas.width = image.width;
     maskCanvas.height = image.height;
     
+    // Initialize mask
     maskCtx.fillStyle = 'black';
     maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
     
-    startTime = Date.now();
+    startTime = Date.now(); // Start the timer
     console.log('Starting reveal');
-    revealImage();
+    revealImage(); // Start the reveal process
 }
 
 function revealImage() {
     const elapsedTime = Date.now() - startTime;
-    const progress = Math.min(elapsedTime / REVEAL_DURATION, 1);
-    
+    const progress = Math.min(elapsedTime / REVEAL_DURATION, 1); // Calculate progress
+
     console.log('Reveal progress:', progress);
     
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(image, 0, 0);
+    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
+    ctx.drawImage(image, 0, 0); // Draw the image
     
     // Create a radial gradient for smooth reveal
     const gradient = maskCtx.createRadialGradient(
@@ -54,16 +56,17 @@ function revealImage() {
     gradient.addColorStop(0, 'rgba(0, 0, 0, 0)');
     gradient.addColorStop(1, 'rgba(0, 0, 0, 1)');
     
-    maskCtx.fillStyle = gradient;
+    maskCtx.fillStyle = gradient; // Apply the gradient to the mask
     maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
     
-    ctx.globalCompositeOperation = 'destination-in';
-    ctx.drawImage(maskCanvas, 0, 0);
-    ctx.globalCompositeOperation = 'source-over';
+    ctx.globalCompositeOperation = 'destination-in'; // Set composite operation
+    ctx.drawImage(maskCanvas, 0, 0); // Apply the mask
+    ctx.globalCompositeOperation = 'source-over'; // Reset composite operation
     
     if (progress < 1) {
-        requestAnimationFrame(revealImage);
+        requestAnimationFrame(revealImage); // Continue the reveal
     }
 }
 
+// Call setup to start the process
 setup();
