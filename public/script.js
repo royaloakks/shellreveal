@@ -47,9 +47,9 @@ function revealImage() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
     ctx.drawImage(image, 0, 0); // Draw the image first
 
-    // Create a mask with a solid black rectangle
-    ctx.globalCompositeOperation = 'destination-in'; // Set composite operation to mask
-    ctx.fillStyle = `rgba(0, 0, 0, ${1 - progress})`; // Gradually decrease opacity
+    // Create a mask that starts fully opaque and becomes transparent
+    ctx.globalCompositeOperation = 'destination-out'; // Set composite operation to remove the mask
+    ctx.fillStyle = `rgba(0, 0, 0, ${progress})`; // Gradually increase opacity
     ctx.fillRect(0, 0, canvas.width, canvas.height); // Apply the mask
 
     ctx.globalCompositeOperation = 'source-over'; // Reset composite operation
