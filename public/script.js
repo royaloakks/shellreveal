@@ -24,10 +24,6 @@ async function setup() {
     canvas.height = image.height;
     document.body.appendChild(canvas); // Append the canvas to the body
 
-    // Fill the canvas with white to start fully masked
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
-    
     startTime = Date.now(); // Start the timer
     console.log('Starting reveal');
     revealImage(); // Start the reveal process
@@ -43,12 +39,9 @@ function revealImage() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
     ctx.drawImage(image, 0, 0); // Draw the image first
 
-    // Create a mask that starts fully opaque (white) and becomes transparent
-    ctx.globalCompositeOperation = 'destination-out'; // Set composite operation to remove the mask
-    ctx.fillStyle = `rgba(255, 255, 255, ${progress})`; // Gradually increase opacity (white)
-    ctx.fillRect(0, 0, canvas.width, canvas.height); // Apply the mask
-
-    ctx.globalCompositeOperation = 'source-over'; // Reset composite operation
+    // Overlay a white rectangle with decreasing opacity
+    ctx.fillStyle = `rgba(255, 255, 255, ${1 - progress})`; // Start fully opaque and decrease
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Apply the overlay
 
     if (progress < 1) {
         requestAnimationFrame(revealImage); // Continue the reveal
