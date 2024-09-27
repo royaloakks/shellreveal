@@ -58,6 +58,8 @@ function revealImage() {
     ctx.fillRect(0, 0, canvas.width, canvas.height); // Apply the mask
 
     ctx.globalCompositeOperation = 'destination-in'; // Mask the image with the gradient
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Apply the mask again to actually hide the image
+    ctx.globalCompositeOperation = 'source-over'; // Reset composite operation
 
     if (progress < 1) {
         requestAnimationFrame(revealImage); // Continue the reveal
