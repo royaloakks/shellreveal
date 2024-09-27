@@ -46,23 +46,19 @@ function revealImage() {
     console.log('Reveal progress:', progress);
     
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-    ctx.drawImage(image, 0, 0); // Draw the image
-    
-    // Create a radial gradient for smooth reveal
-    const gradient = maskCtx.createRadialGradient(
-        canvas.width / 2, canvas.height / 2, 0,
-        canvas.width / 2, canvas.height / 2, canvas.width * progress
-    );
-    gradient.addColorStop(0, 'rgba(0, 0, 0, 0)'); // Transparent at the center
+    ctx.drawImage(image, 0, 0); // Draw the image first
+
+    // Create a mask with a gradient
+    const gradient = ctx.createRadialGradient(canvas.width / 2, canvas.height / 2, 0, canvas.width / 2, canvas.height / 2, canvas.width / 2);
+    gradient.addColorStop(0, 'rgba(0, 0, 0, 0)'); // Transparent in the center
+    gradient.addColorStop(progress, 'rgba(0, 0, 0, 0)'); // Transparent at the current progress
     gradient.addColorStop(1, 'rgba(0, 0, 0, 1)'); // Opaque at the edges
-    
-    maskCtx.fillStyle = gradient; // Apply the gradient to the mask
-    maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height); // Fill the mask with the gradient
-    
-    ctx.globalCompositeOperation = 'destination-in'; // Set composite operation to mask
-    ctx.drawImage(maskCanvas, 0, 0); // Apply the mask
-    ctx.globalCompositeOperation = 'source-over'; // Reset composite operation
-    
+
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Apply the mask
+
+    ctx.globalCompositeOperation = 'destination-in'; // Mask the image with the gradient
+
     if (progress < 1) {
         requestAnimationFrame(revealImage); // Continue the reveal
     }
