@@ -40,37 +40,15 @@ async function setup() {
 }
 
 function revealImage() {
-    const canvas = document.getElementById('canvas');
-    const ctx = canvas.getContext('2d');
-    const image = new Image();
-    image.src = 'path/to/your/image.jpg'; // Update with your image path
-
-    image.onload = () => {
-        ctx.drawImage(image, 0, 0, canvas.width, canvas.height);
-        ctx.globalCompositeOperation = 'destination-out'; // Change to 'destination-out' for masking
-
-        let startTime = null;
-        const duration = 60000; // 1 minute
-
-        function animate(timestamp) {
-            if (!startTime) startTime = timestamp;
-            const elapsed = timestamp - startTime;
-
-            // Calculate the opacity based on elapsed time
-            const opacity = Math.min(elapsed / duration, 1);
-            ctx.fillStyle = `rgba(0, 0, 0, ${opacity})`; // Gradually increase opacity
-
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-            if (elapsed < duration) {
-                requestAnimationFrame(animate);
-            } else {
-                ctx.globalCompositeOperation = 'source-over'; // Reset to default
-            }
+    let maskOpacity = 1; // Start fully opaque
+    const interval = setInterval(() => {
+        if (maskOpacity > 0) {
+            maskOpacity -= 0.01; // Decrease opacity
+            mask.style.opacity = maskOpacity; // Update mask opacity
+        } else {
+            clearInterval(interval); // Stop when fully revealed
         }
-
-        requestAnimationFrame(animate);
-    };
+    }, 600); // Adjust timing as needed
 }
 
 // Call setup to start the process
