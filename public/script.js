@@ -1,8 +1,6 @@
 let image;
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
-const maskCanvas = document.createElement('canvas');
-const maskCtx = maskCanvas.getContext('2d');
 
 const REVEAL_DURATION = 60 * 1000; // 1 minute in milliseconds
 let startTime;
@@ -26,13 +24,6 @@ async function setup() {
     canvas.height = image.height;
     document.body.appendChild(canvas); // Append the canvas to the body
     
-    maskCanvas.width = image.width;
-    maskCanvas.height = image.height;
-    
-    // Initialize mask (fully opaque)
-    maskCtx.fillStyle = 'black';
-    maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
-    
     startTime = Date.now(); // Start the timer
     console.log('Starting reveal');
     revealImage(); // Start the reveal process
@@ -45,11 +36,13 @@ function revealImage() {
     console.log('Reveal progress:', progress);
     
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-    ctx.drawImage(image, 0, 0); // Draw the image first
 
-    // Create a mask that starts fully opaque and becomes transparent
+    // Draw the image first
+    ctx.drawImage(image, 0, 0); 
+
+    // Create a mask that starts fully opaque (white) and becomes transparent
     ctx.globalCompositeOperation = 'destination-out'; // Set composite operation to remove the mask
-    ctx.fillStyle = `rgba(0, 0, 0, ${progress})`; // Gradually increase opacity
+    ctx.fillStyle = `rgba(255, 255, 255, ${progress})`; // Gradually increase opacity (white)
     ctx.fillRect(0, 0, canvas.width, canvas.height); // Apply the mask
 
     ctx.globalCompositeOperation = 'source-over'; // Reset composite operation
