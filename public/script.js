@@ -18,7 +18,9 @@ function loadImage(src) {
 }
 
 async function setup() {
+    console.log('Setup started');
     image = await loadImage('images/sg_shell.jpg');
+    console.log('Image loaded', image.width, image.height);
     
     canvas.width = image.width;
     canvas.height = image.height;
@@ -31,12 +33,15 @@ async function setup() {
     maskCtx.fillRect(0, 0, maskCanvas.width, maskCanvas.height);
     
     startTime = Date.now();
+    console.log('Starting reveal');
     revealImage();
 }
 
 function revealImage() {
     const elapsedTime = Date.now() - startTime;
     const progress = Math.min(elapsedTime / REVEAL_DURATION, 1);
+    
+    console.log('Reveal progress:', progress);
     
     ctx.clearRect(0, 0, canvas.width, canvas.height);
     ctx.drawImage(image, 0, 0);
