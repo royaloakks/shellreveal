@@ -65,6 +65,14 @@ function revealImage() {
         }
     }
 
+    // Overlay a white rectangle to mask the image
+    ctx.globalCompositeOperation = 'destination-out'; // Set composite operation to remove the mask
+    ctx.fillStyle = 'white'; // Fill with white to mask
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Apply the mask
+
+    // Reset composite operation
+    ctx.globalCompositeOperation = 'source-over'; 
+
     if (progress < 1) {
         requestAnimationFrame(revealImage); // Continue the reveal
     }
