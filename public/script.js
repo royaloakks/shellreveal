@@ -41,9 +41,10 @@ function revealImage() {
 
     console.log('Reveal progress:', progress);
     
-    // Clear the canvas and draw the image
+    // Clear the canvas and draw the white mask
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-    ctx.drawImage(image, 0, 0); // Draw the image first
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill with white to mask
 
     // Calculate the number of patches to reveal based on progress
     const patchesToReveal = Math.floor(PATCH_COUNT * progress);
@@ -64,14 +65,6 @@ function revealImage() {
             ctx.drawImage(image, x, y, PATCH_SIZE, PATCH_SIZE, x, y, PATCH_SIZE, PATCH_SIZE);
         }
     }
-
-    // Overlay a white rectangle to mask the image
-    ctx.globalCompositeOperation = 'destination-out'; // Set composite operation to remove the mask
-    ctx.fillStyle = 'white'; // Fill with white to mask
-    ctx.fillRect(0, 0, canvas.width, canvas.height); // Apply the mask
-
-    // Reset composite operation
-    ctx.globalCompositeOperation = 'source-over'; 
 
     if (progress < 1) {
         requestAnimationFrame(revealImage); // Continue the reveal
