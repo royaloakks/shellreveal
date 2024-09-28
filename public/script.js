@@ -79,12 +79,8 @@ function revealImage() {
         const patchKey = `${xPatch},${yPatch}`;
         if (!revealedPatches.has(patchKey)) {
             revealedPatches.add(patchKey);
-            // Draw the random polygon shape
-            ctx.save(); // Save the current state
-            drawRandomPolygon(xPatch, yPatch);
-            // Draw the image in the polygon area
+            // Draw the image in the patch area
             ctx.drawImage(image, xPatch, yPatch, PATCH_SIZE, PATCH_SIZE, xPatch, yPatch, PATCH_SIZE, PATCH_SIZE);
-            ctx.restore(); // Restore the state to remove clipping
         }
     }
 
@@ -96,10 +92,7 @@ function revealImage() {
     // Redraw the revealed patches
     revealedPatches.forEach(patch => {
         const [x, y] = patch.split(',').map(Number);
-        ctx.save(); // Save the current state
-        drawRandomPolygon(x, y);
         ctx.drawImage(image, x, y, PATCH_SIZE, PATCH_SIZE, x, y, PATCH_SIZE, PATCH_SIZE);
-        ctx.restore(); // Restore the state to remove clipping
     });
 
     if (progress < 1) {
