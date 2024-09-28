@@ -45,22 +45,6 @@ async function setup() {
     revealImage(); // Start the reveal process
 }
 
-function drawRandomPolygon(x, y) {
-    const numVertices = Math.floor(Math.random() * 5) + 3; // Random number of vertices (3 to 7)
-    const radius = Math.random() * 40 + 20; // Random radius for the polygon
-    const angleIncrement = (Math.PI * 2) / numVertices;
-
-    ctx.beginPath();
-    for (let i = 0; i < numVertices; i++) {
-        const angle = angleIncrement * i;
-        const vertexX = x + Math.cos(angle) * radius + (Math.random() * 20 - 10); // Randomize position slightly
-        const vertexY = y + Math.sin(angle) * radius + (Math.random() * 20 - 10);
-        ctx.lineTo(vertexX, vertexY);
-    }
-    ctx.closePath();
-    ctx.clip(); // Clip the drawing to this path
-}
-
 function revealImage() {
     const elapsedTime = Date.now() - startTime;
     const progress = Math.min(elapsedTime / REVEAL_DURATION, 1); // Calculate progress
