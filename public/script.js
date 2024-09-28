@@ -3,9 +3,11 @@ const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
 const REVEAL_DURATION = 60 * 1000; // 1 minute in milliseconds
-let startTime;
 const PATCH_SIZE = 50; // Size of each patch
 const revealedPatches = new Set(); // Track revealed patches
+let totalPatches; // Total number of patches
+let patchesPerFrame; // Number of patches to reveal per frame
+let startTime;
 
 function loadImage(src) {
     return new Promise((resolve, reject) => {
@@ -30,6 +32,14 @@ async function setup() {
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
+    // Calculate total patches
+    const totalPatchesX = Math.ceil(image.width / PATCH_SIZE);
+    const totalPatchesY = Math.ceil(image.height / PATCH_SIZE);
+    totalPatches = totalPatchesX * totalPatchesY;
+
+    // Calculate patches to reveal per frame
+    patchesPerFrame = Math.ceil(totalPatches / (REVEAL_DURATION / 1000)); // Reveal all patches in 60 seconds
+
     startTime = Date.now(); // Start the timer
     console.log('Starting reveal');
     revealImage(); // Start the reveal process
@@ -41,18 +51,13 @@ function revealImage() {
 
     console.log('Reveal progress:', progress);
     
-    // Calculate the total number of patches based on image dimensions
-    const totalPatchesX = Math.ceil(image.width / PATCH_SIZE);
-    const totalPatchesY = Math.ceil(image.height / PATCH_SIZE);
-    const totalPatches = totalPatchesX * totalPatchesY;
-
-    // Calculate how many patches to reveal based on progress
-    const patchesToReveal = Math.floor(totalPatches * progress);
+    // Calculate how many patches to reveal based on elapsed time
+    const patchesToReveal = Math.min(patchesPerFrame, totalPatches - revealedPatches.size);
 
     // Randomly reveal patches
-    while (revealedPatches.size < patchesToReveal) {
-        const xPatch = Math.floor(Math.random() * totalPatchesX); // Random x patch index
-        const yPatch = Math.floor(Math.random() * totalPatchesY); // Random y patch index
+    for (let i = 0; i < patchesToReveal; i++) {
+        const xPatch = Math.floor(Math.random() * (canvas.width / PATCH_SIZE)); // Random x patch index
+        const yPatch = Math.floor(Math.random() * (canvas.height / PATCH_SIZE)); // Random y patch index
 
         // Calculate the position of the patch
         const x = xPatch * PATCH_SIZE;
