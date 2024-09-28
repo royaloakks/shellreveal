@@ -7,6 +7,7 @@ let startTime;
 const PATCH_COUNT = 100; // Total number of patches
 const PATCH_SIZE = 50; // Size of each patch
 const revealedPatches = new Set(); // Track revealed patches
+const PATCHES_PER_FRAME = 5; // Number of patches to reveal per frame
 
 function loadImage(src) {
     return new Promise((resolve, reject) => {
@@ -42,20 +43,22 @@ function revealImage() {
 
     console.log('Reveal progress:', progress);
     
-    // Calculate the total number of patches to reveal
+    // Calculate the total number of patches to reveal based on progress
     const totalPatchesToReveal = Math.floor(PATCH_COUNT * progress);
 
     // Randomly reveal patches
     while (revealedPatches.size < totalPatchesToReveal) {
-        const x = Math.floor(Math.random() * (canvas.width / PATCH_SIZE)) * PATCH_SIZE; // Random x position
-        const y = Math.floor(Math.random() * (canvas.height / PATCH_SIZE)) * PATCH_SIZE; // Random y position
+        for (let i = 0; i < PATCHES_PER_FRAME; i++) {
+            const x = Math.floor(Math.random() * (canvas.width / PATCH_SIZE)) * PATCH_SIZE; // Random x position
+            const y = Math.floor(Math.random() * (canvas.height / PATCH_SIZE)) * PATCH_SIZE; // Random y position
 
-        // Ensure we only reveal unique patches
-        const patchKey = `${x},${y}`;
-        if (!revealedPatches.has(patchKey)) {
-            revealedPatches.add(patchKey);
-            // Draw the image in the patch area
-            ctx.drawImage(image, x, y, PATCH_SIZE, PATCH_SIZE, x, y, PATCH_SIZE, PATCH_SIZE);
+            // Ensure we only reveal unique patches
+            const patchKey = `${x},${y}`;
+            if (!revealedPatches.has(patchKey)) {
+                revealedPatches.add(patchKey);
+                // Draw the image in the patch area
+                ctx.drawImage(image, x, y, PATCH_SIZE, PATCH_SIZE, x, y, PATCH_SIZE, PATCH_SIZE);
+            }
         }
     }
 
