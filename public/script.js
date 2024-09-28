@@ -4,6 +4,7 @@ const ctx = canvas.getContext('2d');
 
 const REVEAL_DURATION = 60 * 1000; // 1 minute in milliseconds
 let startTime;
+const PATCH_COUNT = 100; // Number of patches to reveal
 
 function loadImage(src) {
     return new Promise((resolve, reject) => {
@@ -43,9 +44,18 @@ function revealImage() {
     ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
     ctx.drawImage(image, 0, 0); // Draw the image first
 
-    // Overlay a white rectangle with decreasing opacity
-    ctx.fillStyle = `rgba(255, 255, 255, ${1 - progress})`; // Start fully opaque and decrease
-    ctx.fillRect(0, 0, canvas.width, canvas.height); // Apply the overlay
+    // Calculate the number of patches to reveal based on progress
+    const patchesToReveal = Math.floor(PATCH_COUNT * progress);
+
+    // Randomly reveal patches
+    for (let i = 0; i < patchesToReveal; i++) {
+        const x = Math.random() * canvas.width; // Random x position
+        const y = Math.random() * canvas.height; // Random y position
+        const patchSize = 50; // Size of each patch
+
+        // Draw the image in the patch area
+        ctx.drawImage(image, x, y, patchSize, patchSize, x, y, patchSize, patchSize);
+    }
 
     if (progress < 1) {
         requestAnimationFrame(revealImage); // Continue the reveal
