@@ -46,7 +46,7 @@ async function setup() {
 
 function drawRandomPolygon(x, y) {
     const numVertices = Math.floor(Math.random() * 5) + 3; // Random number of vertices (3 to 7)
-    const radius = 40; // Radius for the polygon
+    const radius = Math.random() * 40 + 20; // Random radius for the polygon
     const angleIncrement = (Math.PI * 2) / numVertices;
 
     ctx.beginPath();
