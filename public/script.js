@@ -3,6 +3,7 @@ const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
 const REVEAL_DURATION = 60 * 1000; // 1 minute in milliseconds
+const PATCH_SIZE = 50; // Size of each hexagon
 const revealedShapes = new Set(); // Track revealed shapes
 let totalShapes; // Total number of shapes
 let shapesPerSecond; // Number of shapes to reveal per second
@@ -32,7 +33,7 @@ async function setup() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     // Calculate total shapes
-    totalShapes = Math.ceil((image.width * image.height) / (50 * 50)); // Adjust based on desired average shape size
+    totalShapes = Math.ceil((image.width * image.height) / (PATCH_SIZE * PATCH_SIZE)); // Adjust based on desired average shape size
 
     // Calculate shapes to reveal per second
     shapesPerSecond = totalShapes / (REVEAL_DURATION / 1000); // Total shapes divided by duration in seconds
@@ -42,16 +43,13 @@ async function setup() {
     revealImage(); // Start the reveal process
 }
 
-function drawRandomShape(x, y) {
-    const numVertices = Math.floor(Math.random() * 5) + 3; // Random number of vertices (3 to 7)
-    const radius = Math.random() * 40 + 20; // Random radius for the polygon
-    const angleIncrement = (Math.PI * 2) / numVertices;
-
+function drawHexagon(x, y) {
+    const radius = PATCH_SIZE; // Radius for the hexagon
     ctx.beginPath();
-    for (let i = 0; i < numVertices; i++) {
-        const angle = angleIncrement * i;
-        const vertexX = x + Math.cos(angle) * radius + (Math.random() * 20 - 10); // Randomize position slightly
-        const vertexY = y + Math.sin(angle) * radius + (Math.random() * 20 - 10);
+    for (let i = 0; i < 6; i++) {
+        const angle = (Math.PI / 3) * i; // 60 degrees in radians
+        const vertexX = x + Math.cos(angle) * radius;
+        const vertexY = y + Math.sin(angle) * radius;
         ctx.lineTo(vertexX, vertexY);
     }
     ctx.closePath();
@@ -69,17 +67,17 @@ function revealImage() {
 
     // Ensure we only reveal unique shapes
     while (revealedShapes.size < shapesToReveal) {
-        const x = Math.floor(Math.random() * canvas.width); // Random x position
-        const y = Math.floor(Math.random() * canvas.height); // Random y position
+        const x = Math.floor(Math.random() * (canvas.width - PATCH_SIZE)); // Random x position
+        const y = Math.floor(Math.random() * (canvas.height - PATCH_SIZE)); // Random y position
 
         const shapeKey = `${x},${y}`;
         if (!revealedShapes.has(shapeKey)) {
             revealedShapes.add(shapeKey);
-            // Draw the random shape
+            // Draw the hexagon shape
             ctx.save(); // Save the current state
-            drawRandomShape(x, y);
-            // Draw the image in the shape area
-            ctx.drawImage(image, x, y, 50, 50, x, y, 50, 50); // Adjust size as needed
+            drawHexagon(x, y);
+            // Draw the image in the hexagon area
+            ctx.drawImage(image, x, y, PATCH_SIZE, PATCH_SIZE, x, y, PATCH_SIZE, PATCH_SIZE); // Adjust size as needed
             ctx.restore(); // Restore the state to remove clipping
         }
     }
@@ -93,8 +91,8 @@ function revealImage() {
     revealedShapes.forEach(shape => {
         const [x, y] = shape.split(',').map(Number);
         ctx.save(); // Save the current state
-        drawRandomShape(x, y);
-        ctx.drawImage(image, x, y, 50, 50, x, y, 50, 50); // Adjust size as needed
+        drawHexagon(x, y);
+        ctx.drawImage(image, x, y, PATCH_SIZE, PATCH_SIZE, x, y, PATCH_SIZE, PATCH_SIZE); // Adjust size as needed
         ctx.restore(); // Restore the state to remove clipping
     });
 
