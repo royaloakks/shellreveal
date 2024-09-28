@@ -3,7 +3,7 @@ const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
 const REVEAL_DURATION = 60 * 1000; // 1 minute in milliseconds
-const PATCH_SIZE = 50; // Size of each hexagon
+const PATCH_SIZE = 50; // Size of each shape
 const revealedShapes = new Set(); // Track revealed shapes
 let totalShapes; // Total number of shapes
 let shapesPerSecond; // Number of shapes to reveal per second
@@ -45,6 +45,17 @@ async function setup() {
     revealImage(); // Start the reveal process
 }
 
+function drawSquare(x, y) {
+    ctx.fillRect(x, y, PATCH_SIZE, PATCH_SIZE);
+}
+
+function drawCircle(x, y) {
+    ctx.beginPath();
+    ctx.arc(x + PATCH_SIZE / 2, y + PATCH_SIZE / 2, PATCH_SIZE / 2, 0, Math.PI * 2);
+    ctx.closePath();
+    ctx.fill();
+}
+
 function drawHexagon(x, y) {
     const radius = PATCH_SIZE; // Radius for the hexagon
     ctx.beginPath();
@@ -55,7 +66,7 @@ function drawHexagon(x, y) {
         ctx.lineTo(vertexX, vertexY);
     }
     ctx.closePath();
-    ctx.clip(); // Clip the drawing to this path
+    ctx.fill();
 }
 
 function revealImage() {
@@ -69,16 +80,27 @@ function revealImage() {
 
     // Ensure we only reveal unique shapes
     while (revealedShapes.size < shapesToReveal) {
-        let xPatch = Math.floor(Math.random() * (canvas.width / (PATCH_SIZE * 0.75))) * (PATCH_SIZE * 0.75); // Random x position
-        let yPatch = Math.floor(Math.random() * (canvas.height / (PATCH_SIZE * Math.sqrt(3) / 2))) * (PATCH_SIZE * Math.sqrt(3) / 2); // Random y position
+        const xPatch = Math.floor(Math.random() * (canvas.width / (PATCH_SIZE * 0.75))) * (PATCH_SIZE * 0.75); // Random x position
+        const yPatch = Math.floor(Math.random() * (canvas.height / (PATCH_SIZE * Math.sqrt(3) / 2))) * (PATCH_SIZE * Math.sqrt(3) / 2); // Random y position
 
         const shapeKey = `${xPatch},${yPatch}`;
         if (!revealedShapes.has(shapeKey)) {
             revealedShapes.add(shapeKey);
-            // Draw the hexagon shape
+            // Randomly select a shape to draw
+            const shapeType = Math.floor(Math.random() * 3); // 0: square, 1: circle, 2: hexagon
             ctx.save(); // Save the current state
-            drawHexagon(xPatch, yPatch);
-            // Draw the image in the hexagon area
+            ctx.clip(); // Clip the drawing to this path
+
+            // Draw the selected shape
+            if (shapeType === 0) {
+                drawSquare(xPatch, yPatch);
+            } else if (shapeType === 1) {
+                drawCircle(xPatch, yPatch);
+            } else {
+                drawHexagon(xPatch, yPatch);
+            }
+
+            // Draw the image in the shape area
             ctx.drawImage(image, xPatch, yPatch, PATCH_SIZE, PATCH_SIZE, xPatch, yPatch, PATCH_SIZE, PATCH_SIZE); // Adjust size as needed
             ctx.restore(); // Restore the state to remove clipping
         }
@@ -93,7 +115,18 @@ function revealImage() {
     revealedShapes.forEach(shape => {
         const [x, y] = shape.split(',').map(Number);
         ctx.save(); // Save the current state
-        drawHexagon(x, y);
+        ctx.clip(); // Clip the drawing to this path
+
+        // Draw the selected shape
+        const shapeType = Math.floor(Math.random() * 3); // 0: square, 1: circle, 2: hexagon
+        if (shapeType === 0) {
+            drawSquare(x, y);
+        } else if (shapeType === 1) {
+            drawCircle(x, y);
+        } else {
+            drawHexagon(x, y);
+        }
+
         ctx.drawImage(image, x, y, PATCH_SIZE, PATCH_SIZE, x, y, PATCH_SIZE, PATCH_SIZE); // Adjust size as needed
         ctx.restore(); // Restore the state to remove clipping
     });
