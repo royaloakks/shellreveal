@@ -84,5 +84,5 @@ function revealImage() {
     }
 }
 
-// Call setup to start the process
-setup();
+// Wait for the DOM to be fully loaded before running the setup
+document.addEventListener('DOMContentLoaded', setup);
