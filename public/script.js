@@ -80,9 +80,11 @@ function revealImage() {
         if (!revealedPatches.has(patchKey)) {
             revealedPatches.add(patchKey);
             // Draw the polygon shape
+            ctx.save(); // Save the current state
             drawPolygon(x, y);
             // Draw the image in the polygon area
             ctx.drawImage(image, x, y, PATCH_SIZE, PATCH_SIZE, x, y, PATCH_SIZE, PATCH_SIZE);
+            ctx.restore(); // Restore the state to remove clipping
         }
     }
 
@@ -94,8 +96,10 @@ function revealImage() {
     // Redraw the revealed patches
     revealedPatches.forEach(patch => {
         const [x, y] = patch.split(',').map(Number);
+        ctx.save(); // Save the current state
         drawPolygon(x, y);
         ctx.drawImage(image, x, y, PATCH_SIZE, PATCH_SIZE, x, y, PATCH_SIZE, PATCH_SIZE);
+        ctx.restore(); // Restore the state to remove clipping
     });
 
     if (progress < 1) {
