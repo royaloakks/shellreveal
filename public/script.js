@@ -3,7 +3,6 @@ const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
 const REVEAL_DURATION = 60 * 1000; // 1 minute in milliseconds
-const PATCH_SIZE = 50; // Size of each patch
 const revealedPatches = new Set(); // Track revealed patches
 let totalPatches; // Total number of patches
 let patchesPerFrame; // Number of patches to reveal per frame
@@ -33,8 +32,8 @@ async function setup() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     // Calculate total patches
-    const totalPatchesX = Math.ceil(image.width / PATCH_SIZE);
-    const totalPatchesY = Math.ceil(image.height / PATCH_SIZE);
+    const totalPatchesX = Math.ceil(image.width / 100); // Adjust patch size as needed
+    const totalPatchesY = Math.ceil(image.height / 100);
     totalPatches = totalPatchesX * totalPatchesY;
 
     // Calculate patches to reveal per frame
@@ -43,6 +42,18 @@ async function setup() {
     startTime = Date.now(); // Start the timer
     console.log('Starting reveal');
     revealImage(); // Start the reveal process
+}
+
+function drawPolygon(x, y) {
+    ctx.beginPath();
+    ctx.moveTo(x, y); // Starting point
+
+    // Define the irregular polygon shape
+    ctx.lineTo(x + 30, y + 10);
+    ctx.lineTo(x + 10, y + 30);
+    ctx.lineTo(x - 10, y + 10);
+    ctx.closePath(); // Close the path
+    ctx.clip(); // Clip the drawing to this path
 }
 
 function revealImage() {
@@ -56,19 +67,17 @@ function revealImage() {
 
     // Randomly reveal patches
     for (let i = 0; i < patchesToReveal; i++) {
-        const xPatch = Math.floor(Math.random() * (canvas.width / PATCH_SIZE)); // Random x patch index
-        const yPatch = Math.floor(Math.random() * (canvas.height / PATCH_SIZE)); // Random y patch index
-
-        // Calculate the position of the patch
-        const x = xPatch * PATCH_SIZE;
-        const y = yPatch * PATCH_SIZE;
+        const xPatch = Math.floor(Math.random() * (canvas.width / 100)) * 100; // Random x patch index
+        const yPatch = Math.floor(Math.random() * (canvas.height / 100)) * 100; // Random y patch index
 
         // Ensure we only reveal unique patches
-        const patchKey = `${x},${y}`;
+        const patchKey = `${xPatch},${yPatch}`;
         if (!revealedPatches.has(patchKey)) {
             revealedPatches.add(patchKey);
-            // Draw the image in the patch area
-            ctx.drawImage(image, x, y, PATCH_SIZE, PATCH_SIZE, x, y, PATCH_SIZE, PATCH_SIZE);
+            // Draw the polygon shape
+            drawPolygon(xPatch, yPatch);
+            // Draw the image in the polygon area
+            ctx.drawImage(image, xPatch, yPatch, 100, 100, xPatch, yPatch, 100, 100);
         }
     }
 
@@ -80,7 +89,8 @@ function revealImage() {
     // Redraw the revealed patches
     revealedPatches.forEach(patch => {
         const [x, y] = patch.split(',').map(Number);
-        ctx.drawImage(image, x, y, PATCH_SIZE, PATCH_SIZE, x, y, PATCH_SIZE, PATCH_SIZE);
+        drawPolygon(x, y);
+        ctx.drawImage(image, x, y, 100, 100, x, y, 100, 100);
     });
 
     if (progress < 1) {
