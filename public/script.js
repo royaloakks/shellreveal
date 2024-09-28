@@ -33,7 +33,9 @@ async function setup() {
     ctx.fillRect(0, 0, canvas.width, canvas.height);
     
     // Calculate total shapes
-    totalShapes = Math.ceil((image.width * image.height) / (PATCH_SIZE * PATCH_SIZE)); // Adjust based on desired average shape size
+    const totalShapesX = Math.ceil(image.width / (PATCH_SIZE * 0.75)); // Adjust for hexagon width
+    const totalShapesY = Math.ceil(image.height / PATCH_SIZE);
+    totalShapes = totalShapesX * totalShapesY;
 
     // Calculate shapes to reveal per second
     shapesPerSecond = totalShapes / (REVEAL_DURATION / 1000); // Total shapes divided by duration in seconds
@@ -67,17 +69,17 @@ function revealImage() {
 
     // Ensure we only reveal unique shapes
     while (revealedShapes.size < shapesToReveal) {
-        const x = Math.floor(Math.random() * (canvas.width - PATCH_SIZE)); // Random x position
-        const y = Math.floor(Math.random() * (canvas.height - PATCH_SIZE)); // Random y position
+        const xPatch = Math.floor(Math.random() * (canvas.width / (PATCH_SIZE * 0.75))) * (PATCH_SIZE * 0.75); // Random x position
+        const yPatch = Math.floor(Math.random() * (canvas.height / PATCH_SIZE)) * PATCH_SIZE; // Random y position
 
-        const shapeKey = `${x},${y}`;
+        const shapeKey = `${xPatch},${yPatch}`;
         if (!revealedShapes.has(shapeKey)) {
             revealedShapes.add(shapeKey);
             // Draw the hexagon shape
             ctx.save(); // Save the current state
-            drawHexagon(x, y);
+            drawHexagon(xPatch, yPatch);
             // Draw the image in the hexagon area
-            ctx.drawImage(image, x, y, PATCH_SIZE, PATCH_SIZE, x, y, PATCH_SIZE, PATCH_SIZE); // Adjust size as needed
+            ctx.drawImage(image, xPatch, yPatch, PATCH_SIZE, PATCH_SIZE, xPatch, yPatch, PATCH_SIZE, PATCH_SIZE); // Adjust size as needed
             ctx.restore(); // Restore the state to remove clipping
         }
     }
