@@ -3,7 +3,7 @@ const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
 const REVEAL_DURATION = 60 * 1000; // 1 minute in milliseconds
-const PATCH_SIZE = 50; // Size of each patch
+const PATCH_SIZE = 100; // Size of each patch
 const revealedPatches = new Set(); // Track revealed patches
 let totalPatches; // Total number of patches
 let patchesPerFrame; // Number of patches to reveal per frame
@@ -56,19 +56,15 @@ function revealImage() {
 
     // Randomly reveal patches
     for (let i = 0; i < patchesToReveal; i++) {
-        const xPatch = Math.floor(Math.random() * (canvas.width / PATCH_SIZE)); // Random x patch index
-        const yPatch = Math.floor(Math.random() * (canvas.height / PATCH_SIZE)); // Random y patch index
-
-        // Calculate the position of the patch
-        const x = xPatch * PATCH_SIZE;
-        const y = yPatch * PATCH_SIZE;
+        const xPatch = Math.floor(Math.random() * (canvas.width / PATCH_SIZE)) * PATCH_SIZE; // Random x patch index
+        const yPatch = Math.floor(Math.random() * (canvas.height / PATCH_SIZE)) * PATCH_SIZE; // Random y patch index
 
         // Ensure we only reveal unique patches
-        const patchKey = `${x},${y}`;
+        const patchKey = `${xPatch},${yPatch}`;
         if (!revealedPatches.has(patchKey)) {
             revealedPatches.add(patchKey);
             // Draw the image in the patch area
-            ctx.drawImage(image, x, y, PATCH_SIZE, PATCH_SIZE, x, y, PATCH_SIZE, PATCH_SIZE);
+            ctx.drawImage(image, xPatch, yPatch, PATCH_SIZE, PATCH_SIZE, xPatch, yPatch, PATCH_SIZE, PATCH_SIZE);
         }
     }
 
