@@ -85,14 +85,21 @@ function revealImage() {
     const elapsedTime = Date.now() - startTime;
     const progress = Math.min(elapsedTime / REVEAL_DURATION, 1); // Calculate progress
 
-    // Calculate how many Voronoi cells should be revealed at this point
-    const cellsToReveal = Math.floor(NUM_SITES * progress);
+    console.log('Reveal progress:', progress);
+    
+    // Calculate how many patches to reveal based on elapsed time
+    const patchesToReveal = Math.floor(patchesPerSecond * (elapsedTime / 1000)); // Calculate patches to reveal based on elapsed time
 
-    // Reveal new cells as needed
-    for (let i = 0; i < cellsToReveal; i++) {
-        if (i < NUM_SITES && !revealedCells.has(i)) {
-            revealedCells.add(i);
-            revealVoronoiCell(voronoiDiagram[i]);
+    // Ensure we only reveal unique patches
+    while (revealedPatches.size < patchesToReveal) {
+        const xPatch = Math.floor(Math.random() * (canvas.width / PATCH_SIZE)) * PATCH_SIZE; // Random x patch index
+        const yPatch = Math.floor(Math.random() * (canvas.height / PATCH_SIZE)) * PATCH_SIZE; // Random y patch index
+
+        const patchKey = `${xPatch},${yPatch}`;
+        if (!revealedPatches.has(patchKey)) {
+            revealedPatches.add(patchKey);
+            // Draw the image in the patch area
+            ctx.drawImage(image, xPatch, yPatch, PATCH_SIZE, PATCH_SIZE, xPatch, yPatch, PATCH_SIZE, PATCH_SIZE);
         }
     }
 
