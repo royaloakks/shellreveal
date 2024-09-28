@@ -69,6 +69,15 @@ function drawHexagon(x, y) {
     ctx.fill();
 }
 
+function drawTriangle(x, y) {
+    ctx.beginPath();
+    ctx.moveTo(x + PATCH_SIZE / 2, y); // Top vertex
+    ctx.lineTo(x, y + PATCH_SIZE); // Bottom left vertex
+    ctx.lineTo(x + PATCH_SIZE, y + PATCH_SIZE); // Bottom right vertex
+    ctx.closePath();
+    ctx.fill();
+}
+
 function revealImage() {
     const elapsedTime = Date.now() - startTime;
     const progress = Math.min(elapsedTime / REVEAL_DURATION, 1); // Calculate progress
@@ -87,7 +96,7 @@ function revealImage() {
         if (!revealedShapes.has(shapeKey)) {
             revealedShapes.add(shapeKey);
             // Randomly select a shape to draw
-            const shapeType = Math.floor(Math.random() * 3); // 0: square, 1: circle, 2: hexagon
+            const shapeType = Math.floor(Math.random() * 4); // 0: square, 1: circle, 2: hexagon, 3: triangle
             ctx.save(); // Save the current state
             ctx.clip(); // Clip the drawing to this path
 
@@ -96,8 +105,10 @@ function revealImage() {
                 drawSquare(xPatch, yPatch);
             } else if (shapeType === 1) {
                 drawCircle(xPatch, yPatch);
-            } else {
+            } else if (shapeType === 2) {
                 drawHexagon(xPatch, yPatch);
+            } else {
+                drawTriangle(xPatch, yPatch);
             }
 
             // Draw the image in the shape area
@@ -118,13 +129,15 @@ function revealImage() {
         ctx.clip(); // Clip the drawing to this path
 
         // Draw the selected shape
-        const shapeType = Math.floor(Math.random() * 3); // 0: square, 1: circle, 2: hexagon
+        const shapeType = Math.floor(Math.random() * 4); // 0: square, 1: circle, 2: hexagon, 3: triangle
         if (shapeType === 0) {
             drawSquare(x, y);
         } else if (shapeType === 1) {
             drawCircle(x, y);
-        } else {
+        } else if (shapeType === 2) {
             drawHexagon(x, y);
+        } else {
+            drawTriangle(x, y);
         }
 
         ctx.drawImage(image, x, y, PATCH_SIZE, PATCH_SIZE, x, y, PATCH_SIZE, PATCH_SIZE); // Adjust size as needed
