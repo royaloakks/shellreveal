@@ -33,6 +33,9 @@ async function setup() {
     // Fill the canvas with white to start fully masked
     ctx.fillStyle = 'white';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+    // Disable anti-aliasing to prevent edge issues
+    ctx.imageSmoothingEnabled = false;
     
     // Generate random Voronoi sites and cells
     generateVoronoiSites();
@@ -64,9 +67,7 @@ function generateVoronoiSites() {
 function computeVoronoiDiagram(delaunay, points) {
     const voronoiCells = [];
     const triangles = delaunay.triangles;
-    const halfedges = delaunay.halfedges;
-    const cells = new Map();
-    
+
     for (let i = 0; i < triangles.length; i += 3) {
         const triangle = [triangles[i], triangles[i + 1], triangles[i + 2]];
         const cell = [];
@@ -107,14 +108,23 @@ function revealVoronoiCell(cell) {
     ctx.save();
     ctx.beginPath();
     
-    // Draw the Voronoi cell by moving between its vertices
-    ctx.moveTo(cell[0][0], cell[0][1]);
+    // Calculate the center of the cell to expand it slightly
+    const centerX = cell.reduce((sum, point) => sum + point[0], 0) / cell.length;
+    const centerY = cell.reduce((sum, point) => sum + point[1], 0) / cell.length;
+    
+    const expansion = 0.5; // Amount of expansion to prevent gaps
+
+    // Start at the first point, with expansion
+    ctx.moveTo(cell[0][0] + expansion * (cell[0][0] - centerX), cell[0][1] + expansion * (cell[0][1] - centerY));
+    
+    // Loop through the remaining points, expanding them slightly
     for (let i = 1; i < cell.length; i++) {
-        ctx.lineTo(cell[i][0], cell[i][1]);
+        ctx.lineTo(cell[i][0] + expansion * (cell[i][0] - centerX), cell[i][1] + expansion * (cell[i][1] - centerY));
     }
+    
     ctx.closePath();
     
-    // Clip to the Voronoi cell and draw that part of the image
+    // Clip to the expanded Voronoi cell and draw the corresponding part of the image
     ctx.clip();
     ctx.drawImage(image, 0, 0);
     ctx.restore();
