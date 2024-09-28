@@ -3,7 +3,7 @@ const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
 const REVEAL_DURATION = 60 * 1000; // 1 minute in milliseconds
-const PATCH_SIZE = 100; // Size of each patch
+const PATCH_SIZE = 50; // Change this value to make patches smaller (e.g., 50 pixels)
 const revealedPatches = new Set(); // Track revealed patches
 let totalPatches; // Total number of patches
 let patchesPerSecond; // Number of patches to reveal per second
