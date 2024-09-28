@@ -3,7 +3,7 @@ const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
 const REVEAL_DURATION = 60 * 1000; // 1 minute in milliseconds
-const NUM_SITES = 100; // Number of Voronoi sites (cells)
+const NUM_SITES = 300; // Increased number of Voronoi sites to make the cells smaller
 let sites = [];
 let revealedCells = new Set(); // Track revealed cells
 let startTime;
@@ -112,7 +112,7 @@ function revealVoronoiCell(cell) {
     const centerX = cell.reduce((sum, point) => sum + point[0], 0) / cell.length;
     const centerY = cell.reduce((sum, point) => sum + point[1], 0) / cell.length;
     
-    const expansion = 1; // Increased expansion to 1px to overlap more
+    const expansion = 1; // 1px expansion to overlap edges
 
     // Start at the first point, with expansion
     ctx.moveTo(cell[0][0] + expansion * (cell[0][0] - centerX), cell[0][1] + expansion * (cell[0][1] - centerY));
