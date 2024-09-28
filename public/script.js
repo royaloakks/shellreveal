@@ -6,7 +6,7 @@ const REVEAL_DURATION = 60 * 1000; // 1 minute in milliseconds
 const PATCH_SIZE = 100; // Size of each patch
 const revealedPatches = new Set(); // Track revealed patches
 let totalPatches; // Total number of patches
-let patchesPerFrame; // Number of patches to reveal per frame
+let patchesPerSecond; // Number of patches to reveal per second
 let startTime;
 
 function loadImage(src) {
@@ -37,8 +37,8 @@ async function setup() {
     const totalPatchesY = Math.ceil(image.height / PATCH_SIZE);
     totalPatches = totalPatchesX * totalPatchesY;
 
-    // Calculate patches to reveal per frame
-    patchesPerFrame = Math.ceil(totalPatches / (REVEAL_DURATION / 1000)); // Reveal all patches in 60 seconds
+    // Calculate patches to reveal per second
+    patchesPerSecond = totalPatches / (REVEAL_DURATION / 1000); // Total patches divided by duration in seconds
 
     startTime = Date.now(); // Start the timer
     console.log('Starting reveal');
@@ -52,7 +52,7 @@ function revealImage() {
     console.log('Reveal progress:', progress);
     
     // Calculate how many patches to reveal based on elapsed time
-    const patchesToReveal = Math.min(patchesPerFrame, totalPatches - revealedPatches.size);
+    const patchesToReveal = Math.floor(patchesPerSecond * (elapsedTime / 1000)); // Calculate patches to reveal based on elapsed time
 
     // Randomly reveal patches
     for (let i = 0; i < patchesToReveal; i++) {
