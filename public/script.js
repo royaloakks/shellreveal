@@ -66,6 +66,10 @@ function revealImage() {
         }
     }
 
+    // Draw the image in the revealed patches
+    ctx.globalCompositeOperation = 'destination-over'; // Set composite operation to draw the image below the white mask
+    ctx.drawImage(image, 0, 0); // Draw the image on the canvas
+
     if (progress < 1) {
         requestAnimationFrame(revealImage); // Continue the reveal
     }
