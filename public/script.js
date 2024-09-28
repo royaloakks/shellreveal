@@ -112,7 +112,7 @@ function revealVoronoiCell(cell) {
     const centerX = cell.reduce((sum, point) => sum + point[0], 0) / cell.length;
     const centerY = cell.reduce((sum, point) => sum + point[1], 0) / cell.length;
     
-    const expansion = 0.5; // Amount of expansion to prevent gaps
+    const expansion = 1; // Increased expansion to 1px to overlap more
 
     // Start at the first point, with expansion
     ctx.moveTo(cell[0][0] + expansion * (cell[0][0] - centerX), cell[0][1] + expansion * (cell[0][1] - centerY));
