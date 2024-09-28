@@ -7,9 +7,9 @@ const NUM_SITES = 100; // Number of Voronoi sites (cells)
 let sites = [];
 let revealedCells = new Set(); // Track revealed cells
 let startTime;
-let voronoiCells = [];
+let voronoiDiagram = [];
 
-// Load the image as before
+// Load the image
 function loadImage(src) {
     return new Promise((resolve, reject) => {
         const img = new Image();
@@ -22,7 +22,7 @@ function loadImage(src) {
 // Set up the canvas and start the reveal process
 async function setup() {
     console.log('Setup started');
-    image = await loadImage('images/sg_shell.jpg'); // Load your image
+    image = await loadImage('images/sg_shell.jpg'); // Adjust path if necessary
     console.log('Image loaded', image.width, image.height);
     
     // Set canvas dimensions
@@ -57,24 +57,26 @@ function generateVoronoiSites() {
     
     // Compute Voronoi cells using Delaunator
     const delaunay = Delaunator.from(sites);
-    voronoiCells = computeVoronoiCells(delaunay, sites);
+    voronoiDiagram = computeVoronoiDiagram(delaunay, sites);
 }
 
-// Compute the Voronoi cells using Delaunator
-function computeVoronoiCells(delaunay, points) {
-    const voronoi = [];
-    const halfedges = delaunay.halfedges;
+// Compute Voronoi cells using Delaunator
+function computeVoronoiDiagram(delaunay, points) {
+    const voronoiCells = [];
     const triangles = delaunay.triangles;
-
-    for (let e = 0; e < triangles.length; e++) {
-        const i = triangles[e];
-        const j = triangles[halfedges[e]];
-        if (i > j) continue;
-        const cell = [points[i], points[j]];
-        voronoi.push(cell);
+    const halfedges = delaunay.halfedges;
+    const cells = new Map();
+    
+    for (let i = 0; i < triangles.length; i += 3) {
+        const triangle = [triangles[i], triangles[i + 1], triangles[i + 2]];
+        const cell = [];
+        triangle.forEach(pointIndex => {
+            cell.push(points[pointIndex]);
+        });
+        voronoiCells.push(cell);
     }
     
-    return voronoi;
+    return voronoiCells;
 }
 
 // Reveal the image gradually using the Voronoi pattern
@@ -90,7 +92,7 @@ function revealImage() {
         const cellIndex = Math.floor(Math.random() * NUM_SITES);
         if (!revealedCells.has(cellIndex)) {
             revealedCells.add(cellIndex);
-            revealVoronoiCell(voronoiCells[cellIndex]);
+            revealVoronoiCell(voronoiDiagram[cellIndex]);
         }
     }
 
