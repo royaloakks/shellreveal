@@ -14,7 +14,10 @@ function loadImage(src) {
     return new Promise((resolve, reject) => {
         const img = new Image();
         img.onload = () => resolve(img);
-        img.onerror = reject;
+        img.onerror = () => {
+            console.error(`Failed to load image: ${src}`);
+            reject(new Error(`Image load error: ${src}`));
+        };
         img.src = src;
     });
 }
@@ -89,8 +92,8 @@ function revealImage() {
     const cellsToReveal = Math.floor(NUM_SITES * progress);
 
     // Reveal new cells as needed
-    while (revealedCells.size < cellsToReveal) {
-        const cellIndex = Math.floor(Math.random() * NUM_SITES);
+    for (let i = 0; i < cellsToReveal; i++) {
+        const cellIndex = i % NUM_SITES; // Ensure we go through all cells
         if (!revealedCells.has(cellIndex)) {
             revealedCells.add(cellIndex);
             revealVoronoiCell(voronoiDiagram[cellIndex]);
