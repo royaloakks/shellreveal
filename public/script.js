@@ -34,7 +34,7 @@ async function setup() {
     
     // Calculate total shapes
     const totalShapesX = Math.ceil(image.width / (PATCH_SIZE * 0.75)); // Adjust for hexagon width
-    const totalShapesY = Math.ceil(image.height / PATCH_SIZE);
+    const totalShapesY = Math.ceil(image.height / (PATCH_SIZE * 1.0)); // Adjust for hexagon height
     totalShapes = totalShapesX * totalShapesY;
 
     // Calculate shapes to reveal per second
@@ -70,7 +70,7 @@ function revealImage() {
     // Ensure we only reveal unique shapes
     while (revealedShapes.size < shapesToReveal) {
         const xPatch = Math.floor(Math.random() * (canvas.width / (PATCH_SIZE * 0.75))) * (PATCH_SIZE * 0.75); // Random x position
-        const yPatch = Math.floor(Math.random() * (canvas.height / PATCH_SIZE)) * PATCH_SIZE; // Random y position
+        const yPatch = Math.floor(Math.random() * (canvas.height / (PATCH_SIZE * 1.0))) * (PATCH_SIZE * 1.0); // Random y position
 
         const shapeKey = `${xPatch},${yPatch}`;
         if (!revealedShapes.has(shapeKey)) {
