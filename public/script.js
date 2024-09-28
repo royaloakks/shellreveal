@@ -4,10 +4,8 @@ const ctx = canvas.getContext('2d');
 
 const REVEAL_DURATION = 60 * 1000; // 1 minute in milliseconds
 let startTime;
-const PATCH_COUNT = 100; // Total number of patches
 const PATCH_SIZE = 50; // Size of each patch
 const revealedPatches = new Set(); // Track revealed patches
-const PATCHES_PER_FRAME = 5; // Number of patches to reveal per frame
 
 function loadImage(src) {
     return new Promise((resolve, reject) => {
@@ -43,22 +41,29 @@ function revealImage() {
 
     console.log('Reveal progress:', progress);
     
-    // Calculate the total number of patches to reveal based on progress
-    const totalPatchesToReveal = Math.floor(PATCH_COUNT * progress);
+    // Calculate the total number of patches based on image dimensions
+    const totalPatchesX = Math.ceil(image.width / PATCH_SIZE);
+    const totalPatchesY = Math.ceil(image.height / PATCH_SIZE);
+    const totalPatches = totalPatchesX * totalPatchesY;
+
+    // Calculate how many patches to reveal based on progress
+    const patchesToReveal = Math.floor(totalPatches * progress);
 
     // Randomly reveal patches
-    while (revealedPatches.size < totalPatchesToReveal) {
-        for (let i = 0; i < PATCHES_PER_FRAME; i++) {
-            const x = Math.floor(Math.random() * (canvas.width / PATCH_SIZE)) * PATCH_SIZE; // Random x position
-            const y = Math.floor(Math.random() * (canvas.height / PATCH_SIZE)) * PATCH_SIZE; // Random y position
+    while (revealedPatches.size < patchesToReveal) {
+        const xPatch = Math.floor(Math.random() * totalPatchesX); // Random x patch index
+        const yPatch = Math.floor(Math.random() * totalPatchesY); // Random y patch index
 
-            // Ensure we only reveal unique patches
-            const patchKey = `${x},${y}`;
-            if (!revealedPatches.has(patchKey)) {
-                revealedPatches.add(patchKey);
-                // Draw the image in the patch area
-                ctx.drawImage(image, x, y, PATCH_SIZE, PATCH_SIZE, x, y, PATCH_SIZE, PATCH_SIZE);
-            }
+        // Calculate the position of the patch
+        const x = xPatch * PATCH_SIZE;
+        const y = yPatch * PATCH_SIZE;
+
+        // Ensure we only reveal unique patches
+        const patchKey = `${x},${y}`;
+        if (!revealedPatches.has(patchKey)) {
+            revealedPatches.add(patchKey);
+            // Draw the image in the patch area
+            ctx.drawImage(image, x, y, PATCH_SIZE, PATCH_SIZE, x, y, PATCH_SIZE, PATCH_SIZE);
         }
     }
 
