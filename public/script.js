@@ -49,10 +49,8 @@ function revealImage() {
     const elapsedTime = Date.now() - startTime;
     const progress = Math.min(elapsedTime / REVEAL_DURATION, 1); // Calculate progress
 
-    console.log('Reveal progress:', progress);
-    
     // Calculate how many patches to reveal based on elapsed time
-    const patchesToReveal = Math.floor(patchesPerSecond * (elapsedTime / 1000)); // Calculate patches to reveal based on elapsed time
+    const patchesToReveal = Math.floor(patchesPerSecond * (elapsedTime / 1000)); 
 
     // Ensure we only reveal unique patches
     while (revealedPatches.size < patchesToReveal) {
@@ -66,17 +64,6 @@ function revealImage() {
             ctx.drawImage(image, xPatch, yPatch, PATCH_SIZE, PATCH_SIZE, xPatch, yPatch, PATCH_SIZE, PATCH_SIZE);
         }
     }
-
-    // Clear the canvas and redraw the revealed patches
-    ctx.clearRect(0, 0, canvas.width, canvas.height); // Clear the canvas
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height); // Fill with white to mask
-
-    // Redraw the revealed patches
-    revealedPatches.forEach(patch => {
-        const [x, y] = patch.split(',').map(Number);
-        ctx.drawImage(image, x, y, PATCH_SIZE, PATCH_SIZE, x, y, PATCH_SIZE, PATCH_SIZE);
-    });
 
     if (progress < 1) {
         requestAnimationFrame(revealImage); // Continue the reveal
