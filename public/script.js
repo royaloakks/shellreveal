@@ -42,11 +42,11 @@ function revealImage() {
 
     console.log('Reveal progress:', progress);
     
-    // Calculate the number of patches to reveal based on progress
-    const patchesToReveal = Math.floor(PATCH_COUNT * progress);
+    // Calculate the total number of patches to reveal
+    const totalPatchesToReveal = Math.floor(PATCH_COUNT * progress);
 
     // Randomly reveal patches
-    while (revealedPatches.size < patchesToReveal) {
+    while (revealedPatches.size < totalPatchesToReveal) {
         const x = Math.floor(Math.random() * (canvas.width / PATCH_SIZE)) * PATCH_SIZE; // Random x position
         const y = Math.floor(Math.random() * (canvas.height / PATCH_SIZE)) * PATCH_SIZE; // Random y position
 
