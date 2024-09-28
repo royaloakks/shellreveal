@@ -54,12 +54,11 @@ function revealImage() {
     // Calculate how many patches to reveal based on elapsed time
     const patchesToReveal = Math.floor(patchesPerSecond * (elapsedTime / 1000)); // Calculate patches to reveal based on elapsed time
 
-    // Randomly reveal patches
-    for (let i = 0; i < patchesToReveal; i++) {
+    // Ensure we only reveal unique patches
+    while (revealedPatches.size < patchesToReveal) {
         const xPatch = Math.floor(Math.random() * (canvas.width / PATCH_SIZE)) * PATCH_SIZE; // Random x patch index
         const yPatch = Math.floor(Math.random() * (canvas.height / PATCH_SIZE)) * PATCH_SIZE; // Random y patch index
 
-        // Ensure we only reveal unique patches
         const patchKey = `${xPatch},${yPatch}`;
         if (!revealedPatches.has(patchKey)) {
             revealedPatches.add(patchKey);
