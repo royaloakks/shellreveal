@@ -1,5 +1,4 @@
 let image; // This will be your sg_port_lo.png image
-let maskImage; // Declare a variable for the mask image (if needed)
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -15,7 +14,10 @@ function loadImage(src) {
     return new Promise((resolve, reject) => {
         const img = new Image();
         img.onload = () => resolve(img);
-        img.onerror = reject;
+        img.onerror = (error) => {
+            console.error(`Failed to load image: ${src}`, error);
+            reject(error);
+        };
         img.src = src;
     });
 }
@@ -23,29 +25,28 @@ function loadImage(src) {
 // Set up the canvas and start the reveal process
 async function setup() {
     console.log('Setup started');
-    image = await loadImage('public/images/sg_port_lo.png'); // Load the main image
-    // Uncomment the next line if you want to use a mask image
-    // maskImage = await loadImage('public/images/sg_back_lo.jpg'); // Load the mask image if needed
-    console.log('Image loaded', image.width, image.height);
+    try {
+        image = await loadImage('images/sg_port_lo.png'); // Corrected path
+        console.log('Image loaded', image.width, image.height);
+    } catch (error) {
+        console.error('Error loading image:', error);
+    }
     
     // Set canvas dimensions
     canvas.width = image.width;
     canvas.height = image.height;
     document.body.appendChild(canvas); // Append the canvas to the body
 
-    // Optionally draw the mask image on the canvas if using one
-    // ctx.drawImage(maskImage, 0, 0, canvas.width, canvas.height);
-
     // Disable anti-aliasing to prevent edge issues
     ctx.imageSmoothingEnabled = false;
-    
+
     // Generate random Voronoi sites and cells
     generateVoronoiSites();
-    
+
     // Start the timer
     startTime = Date.now(); 
     console.log('Starting Voronoi reveal');
-    
+
     // Start the reveal process
     revealImage();
 }
@@ -99,9 +100,13 @@ function revealImage() {
         }
     }
 
+    console.log(`Revealed ${revealedCells.size} cells out of ${NUM_SITES}`);
+
     // Continue the reveal process until the image is fully revealed
     if (progress < 1) {
         requestAnimationFrame(revealImage); // Continue the reveal
+    } else {
+        console.log('Reveal complete!'); // Log when the reveal is complete
     }
 }
 
