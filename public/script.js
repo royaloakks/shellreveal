@@ -140,13 +140,12 @@ function revealVoronoiCell(cell) {
     // Clip to the expanded Voronoi cell and draw the corresponding part of the image
     ctx.clip();
     
-    // Calculate the position to center the image
-    const revealWidth = 800; // Set desired width for the reveal image
-    const revealHeight = (revealWidth * (image.height / image.width)); // Maintain aspect ratio
-    const xOffset = (canvas.width - revealWidth) / 2; // Center the image horizontally
-    const yOffset = (canvas.height - revealHeight) / 2; // Center the image vertically
+    // Set the desired width and height for the reveal image
+    const revealSize = 600; // Set desired width and height for the reveal image
+    const xOffset = (canvas.width - revealSize) / 2; // Center the image horizontally
+    const yOffset = (canvas.height - revealSize) / 2; // Center the image vertically
 
-    ctx.drawImage(image, xOffset, yOffset, revealWidth, revealHeight); // Draw the main image
+    ctx.drawImage(image, xOffset, yOffset, revealSize, revealSize); // Draw the main image
     ctx.restore();
 }
 

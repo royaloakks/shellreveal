@@ -4,7 +4,7 @@ body {
     align-items: center; /* Center vertically */
     height: 100vh; /* Full viewport height */
     margin: 0; /* Remove default margin */
-    overflow: hidden; /* Prevent scrolling */
+    overflow: auto; /* Allow scrolling on mobile */
     background-color: #f0f0f0; /* Optional: background color */
 }
 
