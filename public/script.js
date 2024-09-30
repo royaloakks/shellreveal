@@ -32,6 +32,7 @@ async function setup() {
         console.log('Images loaded', image.width, image.height);
     } catch (error) {
         console.error('Error loading images:', error);
+        return; // Exit if images fail to load
     }
     
     // Set canvas dimensions
