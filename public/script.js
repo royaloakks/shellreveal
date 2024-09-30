@@ -1,5 +1,5 @@
-let image;
-let maskImage; // Declare a variable for the mask image
+let image; // This will be your sg_port_lo.png image
+let maskImage; // Declare a variable for the mask image (if needed)
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -15,10 +15,7 @@ function loadImage(src) {
     return new Promise((resolve, reject) => {
         const img = new Image();
         img.onload = () => resolve(img);
-        img.onerror = () => {
-            console.error(`Failed to load image: ${src}`);
-            reject(new Error(`Image load error: ${src}`));
-        };
+        img.onerror = reject;
         img.src = src;
     });
 }
@@ -26,17 +23,18 @@ function loadImage(src) {
 // Set up the canvas and start the reveal process
 async function setup() {
     console.log('Setup started');
-    image = await loadImage('images/sg_shell.jpg'); // Load the main image
-    maskImage = await loadImage('images/sg_back_lo.jpg'); // Load the mask image
-    console.log('Images loaded', image.width, image.height);
+    image = await loadImage('public/images/sg_port_lo.png'); // Load the main image
+    // Uncomment the next line if you want to use a mask image
+    // maskImage = await loadImage('public/images/sg_back_lo.jpg'); // Load the mask image if needed
+    console.log('Image loaded', image.width, image.height);
     
     // Set canvas dimensions
     canvas.width = image.width;
     canvas.height = image.height;
     document.body.appendChild(canvas); // Append the canvas to the body
 
-    // Draw the mask image on the canvas
-    ctx.drawImage(maskImage, 0, 0, canvas.width, canvas.height);
+    // Optionally draw the mask image on the canvas if using one
+    // ctx.drawImage(maskImage, 0, 0, canvas.width, canvas.height);
 
     // Disable anti-aliasing to prevent edge issues
     ctx.imageSmoothingEnabled = false;
