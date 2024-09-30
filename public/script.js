@@ -1,4 +1,5 @@
 let image; // This will be your sg_port_lo.png image
+let maskImage; // Declare a variable for the mask image
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -26,10 +27,11 @@ function loadImage(src) {
 async function setup() {
     console.log('Setup started');
     try {
-        image = await loadImage('images/sg_port_lo.png'); // Corrected path
-        console.log('Image loaded', image.width, image.height);
+        image = await loadImage('images/sg_port_lo.png'); // Load the main image
+        maskImage = await loadImage('images/sg_back_lo.jpg'); // Load the mask image
+        console.log('Images loaded', image.width, image.height);
     } catch (error) {
-        console.error('Error loading image:', error);
+        console.error('Error loading images:', error);
     }
     
     // Set canvas dimensions
@@ -39,6 +41,9 @@ async function setup() {
 
     // Disable anti-aliasing to prevent edge issues
     ctx.imageSmoothingEnabled = false;
+
+    // Draw the mask image on the canvas
+    ctx.drawImage(maskImage, 0, 0, canvas.width, canvas.height); // Draw the mask image
 
     // Generate random Voronoi sites and cells
     generateVoronoiSites();
