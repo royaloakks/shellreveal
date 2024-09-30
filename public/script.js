@@ -35,9 +35,13 @@ async function setup() {
         return; // Exit if images fail to load
     }
     
-    // Set canvas dimensions
-    canvas.width = image.width;
-    canvas.height = image.height;
+    // Set canvas dimensions to maintain aspect ratio
+    const canvasWidth = 800; // Set desired width
+    const aspectRatio = image.height / image.width; // Calculate aspect ratio
+    const canvasHeight = canvasWidth * aspectRatio; // Calculate height based on aspect ratio
+
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
     document.body.appendChild(canvas); // Append the canvas to the body
 
     // Disable anti-aliasing to prevent edge issues

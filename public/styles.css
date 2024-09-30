@@ -23,7 +23,5 @@ canvas {
     position: absolute; /* Position the canvas absolutely */
     top: 0; /* Align to the top */
     left: 0; /* Align to the left */
-    width: 100vw; /* Full width of the viewport */
-    height: 100vh; /* Full height of the viewport */
     z-index: 1; /* Ensure the canvas is above the background */
 }
