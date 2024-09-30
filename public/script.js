@@ -1,4 +1,5 @@
 let image;
+let maskImage; // Declare a variable for the mask image
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
@@ -9,7 +10,7 @@ let revealedCells = new Set(); // Track revealed cells
 let startTime;
 let voronoiDiagram = [];
 
-// Load the image
+// Load the images
 function loadImage(src) {
     return new Promise((resolve, reject) => {
         const img = new Image();
@@ -25,17 +26,17 @@ function loadImage(src) {
 // Set up the canvas and start the reveal process
 async function setup() {
     console.log('Setup started');
-    image = await loadImage('images/sg_shell.jpg'); // Adjust path if necessary
-    console.log('Image loaded', image.width, image.height);
+    image = await loadImage('images/sg_shell.jpg'); // Load the main image
+    maskImage = await loadImage('images/sg_back_lo.jpg'); // Load the mask image
+    console.log('Images loaded', image.width, image.height);
     
     // Set canvas dimensions
     canvas.width = image.width;
     canvas.height = image.height;
     document.body.appendChild(canvas); // Append the canvas to the body
 
-    // Fill the canvas with white to start fully masked
-    ctx.fillStyle = 'white';
-    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    // Draw the mask image on the canvas
+    ctx.drawImage(maskImage, 0, 0, canvas.width, canvas.height);
 
     // Disable anti-aliasing to prevent edge issues
     ctx.imageSmoothingEnabled = false;
@@ -92,8 +93,8 @@ function revealImage() {
     const cellsToReveal = Math.floor(NUM_SITES * progress);
 
     // Reveal new cells as needed
-    for (let i = 0; i < cellsToReveal; i++) {
-        const cellIndex = i % NUM_SITES; // Ensure we go through all cells
+    while (revealedCells.size < cellsToReveal) {
+        const cellIndex = Math.floor(Math.random() * NUM_SITES);
         if (!revealedCells.has(cellIndex)) {
             revealedCells.add(cellIndex);
             revealVoronoiCell(voronoiDiagram[cellIndex]);
@@ -129,7 +130,7 @@ function revealVoronoiCell(cell) {
     
     // Clip to the expanded Voronoi cell and draw the corresponding part of the image
     ctx.clip();
-    ctx.drawImage(image, 0, 0);
+    ctx.drawImage(image, 0, 0); // Draw the main image
     ctx.restore();
 }
 
