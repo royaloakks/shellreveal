@@ -115,6 +115,14 @@ function revealImage() {
         if (elapsedTime < MAX_DURATION) {
             requestAnimationFrame(revealImage); // Continue the reveal
         } else {
+            // If max duration is reached, ensure all cells are revealed
+            while (revealedCells.size < NUM_SITES) {
+                const cellIndex = Math.floor(Math.random() * NUM_SITES);
+                if (!revealedCells.has(cellIndex)) {
+                    revealedCells.add(cellIndex);
+                    revealVoronoiCell(voronoiDiagram[cellIndex]);
+                }
+            }
             console.log('Reveal complete! (max duration reached)'); // Log when the max duration is reached
         }
     } else {
