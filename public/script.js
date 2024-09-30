@@ -109,7 +109,7 @@ function revealImage() {
     console.log(`Revealed ${revealedCells.size} cells out of ${NUM_SITES}`);
 
     // Continue the reveal process until the image is fully revealed
-    if (progress < 1) {
+    if (revealedCells.size < NUM_SITES) {
         requestAnimationFrame(revealImage); // Continue the reveal
     } else {
         console.log('Reveal complete!'); // Log when the reveal is complete
