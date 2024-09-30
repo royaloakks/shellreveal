@@ -35,13 +35,9 @@ async function setup() {
         return; // Exit if images fail to load
     }
     
-    // Set canvas dimensions to maintain aspect ratio
-    const canvasWidth = 800; // Set desired width
-    const aspectRatio = image.height / image.width; // Calculate aspect ratio
-    const canvasHeight = canvasWidth * aspectRatio; // Calculate height based on aspect ratio
-
-    canvas.width = canvasWidth;
-    canvas.height = canvasHeight;
+    // Set canvas dimensions for the mask image
+    canvas.width = window.innerWidth; // Full width of the viewport
+    canvas.height = (canvas.width * (image.height / image.width)); // Maintain aspect ratio for the height
     document.body.appendChild(canvas); // Append the canvas to the body
 
     // Disable anti-aliasing to prevent edge issues
@@ -143,7 +139,13 @@ function revealVoronoiCell(cell) {
     
     // Clip to the expanded Voronoi cell and draw the corresponding part of the image
     ctx.clip();
-    ctx.drawImage(image, 0, 0); // Draw the main image
+    
+    // Calculate the position to center the image
+    const revealWidth = 800; // Set desired width for the reveal image
+    const revealHeight = (revealWidth * (image.height / image.width)); // Maintain aspect ratio
+    const xOffset = (canvas.width - revealWidth) / 2; // Center the image horizontally
+
+    ctx.drawImage(image, xOffset, (canvas.height - revealHeight) / 2, revealWidth, revealHeight); // Draw the main image
     ctx.restore();
 }
 
