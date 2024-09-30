@@ -1,23 +1,29 @@
 body {
-    margin: 0;
-    padding: 0;
     display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f0f0f0;
+    justify-content: center; /* Center horizontally */
+    align-items: center; /* Center vertically */
+    height: 100vh; /* Full viewport height */
+    margin: 0; /* Remove default margin */
+    background-color: #f0f0f0; /* Optional: background color */
 }
 
 .image-container {
-    text-align: center; /* Center text inside the div */
+    position: relative; /* Position relative for centering */
+    max-width: 800px; /* Limit the width to 800px */
+    width: 100%; /* Make it responsive */
+    z-index: 2; /* Ensure the image is above the canvas */
 }
 
 .responsive-image {
-    max-width: 800px; /* Limit the image width to 800px */
-    width: 100%; /* Make the image responsive */
+    max-width: 100%; /* Make the image responsive */
     height: auto; /* Maintain aspect ratio */
 }
 
 canvas {
-    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    position: absolute; /* Position the canvas absolutely */
+    top: 0; /* Align to the top */
+    left: 0; /* Align to the left */
+    width: 100vw; /* Full width of the viewport */
+    height: 100vh; /* Full height of the viewport */
+    z-index: 1; /* Ensure the canvas is above the background */
 }
