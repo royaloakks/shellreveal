@@ -3,7 +3,8 @@ let maskImage; // Declare a variable for the mask image
 const canvas = document.createElement('canvas');
 const ctx = canvas.getContext('2d');
 
-const REVEAL_DURATION = 60 * 1000; // 1 minute in milliseconds
+const REVEAL_DURATION = 50 * 1000; // Target duration for reveal in milliseconds (50 seconds)
+const MAX_DURATION = 60 * 1000; // Maximum duration for reveal in milliseconds (60 seconds)
 const NUM_SITES = 100; // Number of Voronoi sites (cells)
 let sites = [];
 let revealedCells = new Set(); // Track revealed cells
@@ -92,7 +93,7 @@ function computeVoronoiDiagram(delaunay, points) {
 // Reveal the image gradually using the Voronoi pattern
 function revealImage() {
     const elapsedTime = Date.now() - startTime;
-    const progress = Math.min(elapsedTime / REVEAL_DURATION, 1); // Calculate progress
+    const progress = Math.min(elapsedTime / REVEAL_DURATION, 1); // Calculate progress based on target duration
 
     // Calculate how many Voronoi cells should be revealed at this point
     const cellsToReveal = Math.floor(NUM_SITES * progress);
@@ -110,7 +111,12 @@ function revealImage() {
 
     // Continue the reveal process until the image is fully revealed
     if (revealedCells.size < NUM_SITES) {
-        requestAnimationFrame(revealImage); // Continue the reveal
+        // Allow the reveal to continue until all cells are revealed, up to MAX_DURATION
+        if (elapsedTime < MAX_DURATION) {
+            requestAnimationFrame(revealImage); // Continue the reveal
+        } else {
+            console.log('Reveal complete! (max duration reached)'); // Log when the max duration is reached
+        }
     } else {
         console.log('Reveal complete!'); // Log when the reveal is complete
     }
